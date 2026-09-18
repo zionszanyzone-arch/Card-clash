@@ -1,60 +1,219 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Card Clash Online</title>
-<style>
-:root{--bg:#fff7ed;--ink:#182033;--card:#fff;--purple:#6d4aff;--pink:#ff4fa3;--blue:#24a8ff;--yellow:#ffd84d;--green:#20c997;--red:#ff5c67}
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:linear-gradient(135deg,#fff7ed,#eef6ff 48%,#f9efff);color:var(--ink)}header{background:linear-gradient(90deg,#6d4aff,#ff4fa3,#24a8ff);color:#fff;padding:16px;display:flex;justify-content:space-between;gap:10px;align-items:center;position:sticky;top:0;z-index:5;box-shadow:0 5px 20px #0002}nav{background:#fff;padding:10px;display:flex;gap:8px;flex-wrap:wrap;box-shadow:0 2px 12px #0001}button{padding:10px 14px;border:0;border-radius:12px;font-weight:800;cursor:pointer;background:#edf0f7;color:#182033}button.p{background:linear-gradient(90deg,#6d4aff,#ff4fa3);color:#fff}button.d{background:#ffe1e4;color:#a30d20}main{max-width:1050px;margin:auto;padding:20px}.page{display:none}.on{display:block}.box{background:#fff;padding:20px;border-radius:20px;margin-bottom:16px;box-shadow:0 7px 25px #00000012;border:1px solid #ffffff}.hero{background:linear-gradient(135deg,#6d4aff,#ff4fa3,#24a8ff);color:#fff}.grid,.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}.stat{background:#fff;border-radius:18px;padding:18px;box-shadow:0 5px 18px #0001;border-top:5px solid var(--purple)}.card{text-align:center;background:#fff;padding:10px;border-radius:16px;box-shadow:0 4px 15px #0001;border:2px solid #eee}.card img{width:100%;height:210px;object-fit:cover;border-radius:12px;background:#eee}input{padding:12px;border:2px solid #d9dfea;border-radius:11px;width:100%;max-width:440px;margin:5px 0;box-sizing:border-box;font:inherit}.notice{padding:12px;border-radius:13px;background:#eef2ff}.ok{background:#dcfce7}.warn{background:#fff3c4}.hide{display:none!important}.muted{color:#64748b}.auth{position:fixed;inset:0;background:linear-gradient(135deg,#eef2ff,#fff1f8,#fff9df);display:grid;place-items:center;z-index:10;padding:20px}.authbox{background:#fff;padding:25px;border-radius:24px;width:min(470px,100%);box-shadow:0 15px 50px #0002}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.row input{flex:1;min-width:180px}.pending{border-left:6px solid #ffb300}.friend{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.scan{border:2px dashed #b8a8ff;border-radius:18px;padding:16px;background:#faf8ff}.scan img{max-width:190px;max-height:250px;border-radius:14px;display:block;margin:10px 0}.progress{height:9px;background:#e9e9f5;border-radius:9px;overflow:hidden;margin:10px 0}.progress>div{height:100%;width:0;background:linear-gradient(90deg,#6d4aff,#ff4fa3,#24a8ff);transition:.2s}.tag{display:inline-block;padding:6px 9px;border-radius:999px;background:#fff0f7;margin:2px}.small{font-size:.9rem}
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Card Clash ⚡</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#6c5ce7,#00cec9,#fdcb6e);min-height:100vh;color:#18202b}.wrap{max-width:1050px;margin:auto;padding:18px}.hero,.card{background:rgba(255,255,255,.96);border-radius:22px;padding:20px;box-shadow:0 8px 25px #0002;margin:14px 0}.hero{text-align:center}.hero h1{font-size:44px;margin:0;color:#6c5ce7}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}input,button,select{width:100%;padding:13px;border-radius:12px;border:2px solid #ddd;font-size:16px;margin:5px 0}button{border:0;background:#6c5ce7;color:#fff;font-weight:bold;cursor:pointer}button.green{background:#00b894}button.red{background:#e17055}button.gray{background:#636e72}.tabs{display:flex;gap:7px;overflow:auto;margin-bottom:12px}.tabs button{width:auto;white-space:nowrap}.tab{display:none}.tab.active{display:block}.stat{font-size:30px;font-weight:bold;color:#6c5ce7}.small{font-size:13px;color:#636e72}.error{color:#d63031;font-weight:bold}.success{color:#008f68;font-weight:bold}.pill{display:inline-block;padding:7px 11px;border-radius:999px;background:#dfe6e9;margin:3px}.friend{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid #ddd;padding:12px;border-radius:12px;margin:8px 0}.friend button{width:auto;padding:8px 12px}.cardpic{width:100%;max-height:280px;object-fit:contain;border-radius:15px;background:#f1f2f6}.battleArena{display:grid;grid-template-columns:1fr 1fr;gap:15px}.fighter{border:3px solid #ddd;border-radius:18px;padding:15px;text-align:center}.hpbar{height:22px;background:#ddd;border-radius:20px;overflow:hidden}.hpfill{height:100%;background:#00b894;transition:width .25s}.hidden{display:none}.notice{background:#fff3cd;border-radius:12px;padding:12px}@media(max-width:650px){.battleArena{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-<div id="setup" class="auth"><div class="authbox"><h1>⚡ Card Clash Online</h1><p>This version is pre-connected to your Card Clash Supabase project.</p><p class="notice warn">The site owner needs to put the Supabase <b>publishable</b> key into the code once. Players do not need their own Supabase account.</p><input id="skey" placeholder="Paste your Supabase publishable key once" type="password"><button class="p" onclick="connect()">Connect Card Clash</button><p id="setupMsg" class="muted"></p><p class="muted small">Never use a Supabase secret/service-role key here.</p></div></div>
-<div id="auth" class="auth hide"><div class="authbox"><h1>⚡ Card Clash</h1><p id="authHint">Create an online account.</p>
-<div id="signup"><input id="suEmail" type="email" placeholder="Email"><input id="suUser" placeholder="Username"><input id="suPass" type="password" placeholder="Password (6+ characters)"><button class="p" id="createBtn">Create account</button><button id="alreadyBtn">I already have an account</button><p id="am"></p></div>
-<div id="login" class="hide"><input id="liEmail" type="email" placeholder="Email"><input id="liPass" type="password" placeholder="Password"><button class="p" id="signInBtn">Sign in</button><button id="createInsteadBtn">Create an account</button><p id="lm"></p></div>
+<div class="wrap">
+<div class="hero"><h1>⚡ Card Clash ⚡</h1><p>🃏 Collect • 👥 Connect • ⚔️ Battle Online</p></div>
+
+<div id="setup" class="card">
+<h2>🔧 One-time setup</h2>
+<p>The Supabase URL is already built in. Replace the Publishable Key placeholder in this file before uploading it to GitHub.</p>
+<div class="notice"><b>Important:</b> Use your Supabase <b>Publishable</b> key only. Never put a secret/service-role key in a website.</div>
+</div>
+
+<div id="auth" class="card">
+<h2 id="authTitle">🧑‍💻 Create your Card Clash account</h2>
+<div id="signupFields"><input id="username" placeholder="Choose a username"></div>
+<input id="email" type="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password (6+ characters)">
+<button id="authBtn" onclick="authAction()">Create Account</button>
+<button class="gray" onclick="toggleAuth()">I already have an account</button>
+<p id="authMsg"></p>
+</div>
+
+<div id="app" style="display:none">
+<div class="hero"><h2>👋 Welcome, <span id="hello"></span>!</h2><p>Your friend code:</p><h2 id="myCode"></h2></div>
+<div class="tabs">
+<button onclick="showTab('home')">🏠 Home</button><button onclick="showTab('cards')">🃏 Cards</button><button onclick="showTab('friends')">👥 Friends</button><button onclick="showTab('battle')">⚔️ Online Battle</button><button class="gray" onclick="logout()">Log Out</button>
+</div>
+
+<section id="home" class="tab active">
+<div class="grid">
+<div class="card"><div class="small">🏆 Wins</div><div id="wins" class="stat">0</div></div>
+<div class="card"><div class="small">💥 Losses</div><div id="losses" class="stat">0</div></div>
+<div class="card"><div class="small">🃏 Cards</div><div id="cardCount" class="stat">0</div></div>
+</div>
+<div class="card"><h2>🎮 Card Clash</h2><p>Add cards, exchange friend codes, accept requests, then challenge an accepted friend. Battles synchronize through the online database.</p></div>
+</section>
+
+<section id="cards" class="tab">
+<div class="card"><h2>🃏 Add a Card</h2>
+<input id="cardName" placeholder="Card name"><input id="cardHp" type="number" min="1" placeholder="HP"><input id="attackName" placeholder="Attack name"><input id="attackDamage" type="number" min="0" placeholder="Attack damage">
+<input id="cardImage" type="file" accept="image/*" capture="environment">
+<button onclick="addCard()">➕ Add Card</button><button class="green" onclick="scanCard()">📷 Auto-detect text from photo</button>
+<p id="scanMsg" class="small">Take a card photo and your browser may detect some text. Always check it before saving.</p>
+</div><div id="cardsList"></div>
+</section>
+
+<section id="friends" class="tab">
+<div class="card"><h2>👥 Add a Friend</h2><input id="friendCode" placeholder="CC-AB12CD"><button onclick="sendFriendRequest()">Send Friend Request</button><p id="friendMsg"></p></div>
+<div class="card"><h2>📨 Requests</h2><div id="requests">Loading...</div></div>
+<div class="card"><h2>🤝 Friends</h2><div id="friendsList">Loading...</div></div>
+</section>
+
+<section id="battle" class="tab">
+<div class="card"><h2>⚔️ Online Battle</h2>
+<p class="small">Choose an accepted friend, choose your card, and send a challenge. Once they accept, both screens stay synchronized.</p>
+<select id="opponent"></select>
+<select id="battleCard"></select>
+<button onclick="createBattle()">⚔️ Challenge Friend</button>
+<p id="battleMsg"></p>
+</div>
+<div id="battleArea"></div>
+<div class="card"><h2>📨 Incoming Challenges</h2><div id="challenges">Loading...</div></div>
+</section>
 </div></div>
-<header><b>⚡ Card Clash</b><span>👤 <span id="who">Guest</span></span></header>
-<nav><button onclick="page('home')">🏠 Home</button><button onclick="page('cardsPage')">🃏 Cards</button><button onclick="page('friends')">👥 Friends</button><button onclick="page('battle')">⚔️ Battle</button><button onclick="page('account')">⚙️ Account</button></nav>
-<main>
-<section id="home" class="page on"><div class="box hero"><h1>🃏 Battle with your cards</h1><p>Collect cards, connect with friends, and get ready for online battles.</p><button onclick="page('cardsPage')">Scan a card</button></div><div class="grid"><div class="stat"><h2 id="cc">0</h2>Cards</div><div class="stat"><h2 id="fc">0</h2>Friends</div><div class="stat"><h2 id="w">0</h2>Wins</div><div class="stat"><h2 id="l">0</h2>Losses</div></div></section>
-<section id="cardsPage" class="page"><div class="box"><h1>🃏 My Cards</h1><div class="scan"><h2>📷 Scan & auto-detect</h2><p class="small">Take a photo or choose a card image. Card Clash will use OCR to try to read the card name, HP, attack name, and damage for you.</p><input id="photo" type="file" accept="image/*" capture="environment"><img id="prev" style="display:none"><button class="p" id="scanBtn">🔎 Auto-detect card</button><div class="progress"><div id="bar"></div></div><p id="scanMsg" class="muted small"></p></div><p class="muted">You can correct anything the scanner reads before saving.</p><input id="cn" placeholder="Card name"><input id="ch" type="number" placeholder="HP"><input id="an" placeholder="Attack name"><input id="ad" type="number" placeholder="Attack damage"><br><button class="p" onclick="addCard()">➕ Add Card</button><div id="msg"></div></div><div id="cards" class="cards"></div></section>
-<section id="friends" class="page"><div class="box"><h1>👥 Friends</h1><div class="notice">Your friend code: <b id="mycode"></b></div><p class="muted">Give this code to your friend. They enter it on their own device.</p><div class="row"><input id="fcin" placeholder="Friend code, e.g. CC-AB12CD"><button class="p" onclick="sendFriendRequest()">Send friend request</button></div><div id="fm"></div></div><div class="box"><h2>Friend requests</h2><div id="requests"></div></div><div class="box"><h2>Friends</h2><div id="fl"></div></div></section>
-<section id="battle" class="page"><div class="box"><h1>⚔️ Battle</h1><div class="notice warn">Friends are online through Supabase. The current battle screen is a playable test battle; live turn-by-turn synchronization is a separate upgrade.</div><div id="battleFriends"></div><div id="log" class="notice">Choose a friend to start a test battle.</div></div></section>
-<section id="account" class="page"><div class="box"><h1>⚙️ Account</h1><p>Username: <b id="acc"></b></p><p>Friend code: <b id="accc"></b></p><p>Email: <span id="email"></span></p><button class="d" onclick="logout()">Sign out</button></div></section>
-</main>
+
 <script>
-const SUPABASE_URL='https://nmyghwxoghqywuhdhpgk.supabase.co';
-const KEY_STORAGE='cc_publishable_key_v2';
-let sb=null,user=null,profile=null,refreshTimer=null,imgData='',scanFile=null;
-const $=id=>document.getElementById(id);
-function esc(s){return String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]))}
-function makeClient(key){return window.supabase.createClient(SUPABASE_URL,key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}})}
-function connect(){let key=$('skey').value.trim();if(!key){$('setupMsg').textContent='Paste your Supabase publishable key.';return}if(!key.startsWith('sb_publishable_')){$('setupMsg').textContent='That does not look like a publishable key. It should start with sb_publishable_.';return}try{sb=makeClient(key);localStorage.setItem(KEY_STORAGE,key);$('setup').classList.add('hide');boot()}catch(e){$('setupMsg').textContent='Could not connect: '+e.message}}
-function toggleAuth(showLogin){$('signup').classList.toggle('hide',showLogin);$('login').classList.toggle('hide',!showLogin);$('am').textContent='';$('lm').textContent='';$('authHint').textContent=showLogin?'Sign in to Card Clash.':'Create an online account.'}
-async function boot(){if(!sb){let key=localStorage.getItem(KEY_STORAGE);if(!key){$('setup').classList.remove('hide');return}sb=makeClient(key)}let {data}=await sb.auth.getSession();if(data.session){await loadProfile(data.session.user);if(profile)enter();else showAuth()}else showAuth();sb.auth.onAuthStateChange(async(event,session)=>{if(session){await loadProfile(session.user);if(profile)enter();else showAuth()}else showAuth()})}
-function showAuth(){$('auth').classList.remove('hide')}
-async function signup(){let email=$('suEmail').value.trim(),username=$('suUser').value.trim(),pass=$('suPass').value;if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){$('am').textContent='Enter a valid email.';return}if(!/^[A-Za-z0-9_]{3,18}$/.test(username)){$('am').textContent='Use 3–18 letters, numbers, or underscores.';return}if(pass.length<6){$('am').textContent='Password must be at least 6 characters.';return}$('createBtn').disabled=true;let {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{username},emailRedirectTo:location.origin+location.pathname}});$('createBtn').disabled=false;if(error){$('am').textContent=error.message;return}if(data.session){await loadProfile(data.user);if(profile)enter();else $('am').textContent='Account created, but the profile could not be loaded yet.'}else $('am').textContent='Account created. If email confirmation is enabled, check your email.'}
-async function login(){let email=$('liEmail').value.trim(),pass=$('liPass').value;$('signInBtn').disabled=true;let {data,error}=await sb.auth.signInWithPassword({email,password:pass});$('signInBtn').disabled=false;if(error){$('lm').textContent=error.message;return}if(data.user){await loadProfile(data.user);if(profile)enter();else $('lm').textContent='Signed in, but your Card Clash profile could not be loaded.'}}
-async function loadProfile(u){user=u;let {data,error}=await sb.from('profiles').select('*').eq('id',u.id).single();if(error){console.error(error);profile=null;return}profile=data}
-function enter(){$('auth').classList.add('hide');render();page('home');startRefresh()}
-function startRefresh(){clearInterval(refreshTimer);refreshTimer=setInterval(async()=>{if(user){await loadProfile(user);if($('friends').classList.contains('on'))await loadFriends()}},7000)}
-async function logout(){clearInterval(refreshTimer);await sb.auth.signOut()}
-function page(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));$(id).classList.add('on');render();if(id==='friends')loadFriends();if(id==='battle')loadBattleFriends()}
-$('alreadyBtn').onclick=()=>toggleAuth(true);$('createInsteadBtn').onclick=()=>toggleAuth(false);$('createBtn').onclick=signup;$('signInBtn').onclick=login;
-$('photo').onchange=e=>{scanFile=e.target.files[0]||null;if(!scanFile)return;let r=new FileReader();r.onload=()=>{$('prev').src=r.result;$('prev').style.display='block';imgData=r.result;$('scanMsg').textContent='Photo ready. Tap Auto-detect card.'};r.readAsDataURL(scanFile)};
-$('scanBtn').onclick=async()=>{if(!scanFile){$('scanMsg').textContent='Take or choose a card photo first.';return}try{$('scanBtn').disabled=true;$('scanMsg').textContent='Reading the card…';$('bar').style.width='15%';let result=await Tesseract.recognize(scanFile,'eng',{logger:m=>{if(m.progress)$('bar').style.width=Math.round(15+m.progress*85)+'%'}});let text=result.data.text;let lines=text.split(/\n+/).map(x=>x.replace(/[^\w' -]/g,' ').replace(/\s+/g,' ').trim()).filter(Boolean);let bad=/^(pokemon|pok[eé]mon|basic|stage|hp|weakness|resistance|retreat|ability|rule|illustrator|copyright|trainer|energy|item|supporter|evolved|attack|damage|gx|ex|vmax|vstar|tera|tcg)$/i;let name=lines.find(x=>x.length>=2&&x.length<=28&&!bad.test(x)&&/[A-Za-z]/.test(x)&&!/^\d+$/.test(x));let hpMatch=text.match(/(?:HP\s*)?(\d{2,3})\s*HP/i)||text.match(/HP[^\d]{0,8}(\d{2,3})/i);let damageMatches=[...text.matchAll(/(?:^|\n)\s*([A-Za-z][A-Za-z' -]{2,30})\s+(\d{2,3})\s*(?:$|\n)/g)];let dmg=damageMatches.length?damageMatches[0][2]:'';let atk=damageMatches.length?damageMatches[0][1]:'';$('cn').value=name||'';$('ch').value=hpMatch?hpMatch[1]:'';$('an').value=atk||'';$('ad').value=dmg||'';$('bar').style.width='100%';$('scanMsg').textContent=(name?'✅ Detected '+name+'. ':'')+'Please check the fields—the scanner is best-effort.'}catch(e){$('scanMsg').textContent='Scanner could not read that image. Try a clearer, well-lit photo.';console.error(e)}finally{$('scanBtn').disabled=false}};
-async function addCard(){if(!profile)return;let c={name:$('cn').value.trim()||'Pokémon',hp:+$('ch').value||100,attack_name:$('an').value.trim()||'Attack',attack_damage:+$('ad').value||30,image:imgData};let {error}=await sb.from('cards').insert({user_id:user.id,...c});if(error){$('msg').className='notice warn';$('msg').textContent=error.message;return}$('msg').className='notice ok';$('msg').textContent='✅ Card added online!';$('cn').value=$('ch').value=$('an').value=$('ad').value='';$('photo').value='';$('prev').style.display='none';$('scanMsg').textContent='';$('bar').style.width='0';imgData='';scanFile=null;render()}
-async function loadCards(){let {data,error}=await sb.from('cards').select('*').eq('user_id',user.id).order('created_at',{ascending:false});return error?[]:data||[]}
-async function delCard(id){await sb.from('cards').delete().eq('id',id).eq('user_id',user.id);render()}
-async function sendFriendRequest(){let code=$('fcin').value.trim().toUpperCase().replace(/\s+/g,'');if(!/^CC-[A-Z0-9]{6}$/.test(code)){$('fm').className='notice warn';$('fm').textContent='Enter the full friend code, such as CC-AB12CD.';return}let {data:target,error}=await sb.from('profiles').select('id,username,friend_code').eq('friend_code',code).maybeSingle();if(error||!target){$('fm').className='notice warn';$('fm').textContent='No account was found with that code.';return}if(target.id===user.id){$('fm').className='notice warn';$('fm').textContent='You cannot add yourself.';return}let {data:existing}=await sb.from('friend_requests').select('id,status').or(`and(from_user.eq.${user.id},to_user.eq.${target.id}),and(from_user.eq.${target.id},to_user.eq.${user.id})`).in('status',['pending','accepted']);if(existing&&existing.length){$('fm').className='notice warn';$('fm').textContent='You already have a request or friendship with this person.';return}let {error:ins}=await sb.from('friend_requests').insert({from_user:user.id,to_user:target.id,status:'pending'});$('fm').className=ins?'notice warn':'notice ok';$('fm').textContent=ins?(ins.code==='23505'?'Request already sent.':ins.message):'✅ Friend request sent to '+target.username+'!';$('fcin').value='';loadFriends()}
-async function loadFriends(){if(!user)return;let {data:req}=await sb.from('friend_requests').select('id,from_user,status,profiles!friend_requests_from_user_fkey(username,friend_code)').eq('to_user',user.id).eq('status','pending').order('created_at',{ascending:false});$('requests').innerHTML=(req||[]).map(r=>`<div class="box pending"><div>👤 <b>${esc(r.profiles.username)}</b> · ${esc(r.profiles.friend_code)}</div><button class="p" onclick="acceptRequest('${r.id}')">Accept</button> <button class="d" onclick="declineRequest('${r.id}')">Decline</button></div>`).join('')||'<p class="muted">No pending requests.</p>';let {data:friends}=await sb.from('friend_requests').select('id,from_user,to_user,from:profiles!friend_requests_from_user_fkey(username,friend_code),to:profiles!friend_requests_to_user_fkey(username,friend_code)').eq('status','accepted').or(`from_user.eq.${user.id},to_user.eq.${user.id}`);let list=(friends||[]).map(x=>x.from_user===user.id?x.to:x.from);$('fl').innerHTML=list.map(f=>`<div class="box friend"><span>👤 <b>${esc(f.username)}</b><br><small>${esc(f.friend_code)}</small></span><button class="p" onclick="page('battle');loadBattleFriends()">⚔️ Battle</button></div>`).join('')||'<p class="muted">No friends yet.</p>';$('fc').textContent=list.length}
-async function acceptRequest(id){let {data:r}=await sb.from('friend_requests').select('*').eq('id',id).eq('to_user',user.id).single();if(!r)return;await sb.from('friend_requests').update({status:'accepted'}).eq('id',id);await loadFriends()}
-async function declineRequest(id){await sb.from('friend_requests').delete().eq('id',id).eq('to_user',user.id);await loadFriends()}
-async function loadBattleFriends(){if(!user)return;let {data:friends}=await sb.from('friend_requests').select('id,from_user,to_user,from:profiles!friend_requests_from_user_fkey(id,username,friend_code),to:profiles!friend_requests_to_user_fkey(id,username,friend_code)').eq('status','accepted').or(`from_user.eq.${user.id},to_user.eq.${user.id}`);let list=(friends||[]).map(x=>x.from_user===user.id?x.to:x.from);$('battleFriends').innerHTML=list.map(f=>`<div class="box friend"><span>👤 <b>${esc(f.username)}</b></span><button class="p" onclick="testBattle('${esc(f.username)}')">⚔️ Start test battle</button></div>`).join('')||'<p class="muted">Add a friend first.</p>'}
-function testBattle(name){$('log').className='notice ok';$('log').textContent='⚔️ Test battle started against '+name+'. Live turn synchronization can be added next.'}
-async function render(){if(!profile)return;$('who').textContent=profile.username;$('mycode').textContent=profile.friend_code;$('acc').textContent=profile.username;$('accc').textContent=profile.friend_code;$('email').textContent=user.email||'';let cardsData=await loadCards();$('cc').textContent=cardsData.length;$('w').textContent=profile.wins||0;$('l').textContent=profile.losses||0;$('cards').innerHTML=cardsData.map(c=>`<div class="card">${c.image?`<img src="${c.image}" alt="card image">`:'<div style="height:210px;display:grid;place-items:center;font-size:60px">🃏</div>'}<h3>${esc(c.name)}</h3><b>${c.hp} HP</b><br><small>${esc(c.attack_name)} · ${c.attack_damage} damage</small><br><button class="d" onclick="delCard('${c.id}')">Remove</button></div>`).join('')||'<div class="box">No cards yet.</div>'}
-(function(){let key=localStorage.getItem(KEY_STORAGE);if(key&&key.startsWith('sb_publishable_')){sb=makeClient(key);$('setup').classList.add('hide');boot()}})();
-</script></body></html>
+const SUPABASE_URL="https://nmyghwxoghqywuhdhpgk.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="PASTE_YOUR_PUBLISHABLE_KEY_HERE";
+const READY=SUPABASE_PUBLISHABLE_KEY!=="PASTE_YOUR_PUBLISHABLE_KEY_HERE";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+let user=null,profile=null,cards=[],friends=[],currentBattle=null,channel=null;
+
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function message(id,t,good=false){const e=document.getElementById(id);if(e){e.textContent=t;e.className=good?"success":"error"}}
+
+let login=false;
+function toggleAuth(){login=!login;document.getElementById("authTitle").textContent=login?"🔑 Log in to Card Clash":"🧑‍💻 Create your Card Clash account";document.getElementById("authBtn").textContent=login?"Log In":"Create Account";document.getElementById("signupFields").style.display=login?"none":"block";document.getElementById("authMsg").textContent=""}
+
+async function authAction(){
+ if(!READY)return message("authMsg","Add your Supabase Publishable Key to index.html first.");
+ const email=document.getElementById("email").value.trim(),password=document.getElementById("password").value;
+ if(!email||!password)return message("authMsg","Enter your email and password.");
+ if(login){const r=await sb.auth.signInWithPassword({email,password});if(r.error)message("authMsg",r.error.message);return}
+ const username=document.getElementById("username").value.trim();
+ if(!username)return message("authMsg","Choose a username.");
+ if(password.length<6)return message("authMsg","Password must be at least 6 characters.");
+ const r=await sb.auth.signUp({email,password,options:{data:{username}}});
+ if(r.error)return message("authMsg",r.error.message);
+ message("authMsg",r.data.session?"Account created!":"Account created. If email confirmation is enabled, check your email.",true);
+}
+async function logout(){await sb.auth.signOut();location.reload()}
+function showTab(id){document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");if(id==="cards")loadCards();if(id==="friends")loadFriends();if(id==="battle"){loadFriends();loadChallenges();}}
+
+async function loadProfile(){
+ const r=await sb.from("profiles").select("*").eq("id",user.id).single();
+ if(r.error)return console.error(r.error);
+ profile=r.data;document.getElementById("hello").textContent=profile.username;document.getElementById("myCode").textContent=profile.friend_code;document.getElementById("wins").textContent=profile.wins||0;document.getElementById("losses").textContent=profile.losses||0;
+}
+async function loadCards(){
+ const r=await sb.from("cards").select("*").eq("user_id",user.id).order("created_at",{ascending:false});
+ cards=r.data||[];document.getElementById("cardCount").textContent=cards.length;
+ document.getElementById("cardsList").innerHTML=cards.length?cards.map(c=>`<div class="card">${c.image?`<img class="cardpic" src="${c.image}" alt="">`:``}<h2>${esc(c.name)}</h2><span class="pill">❤️ ${c.hp} HP</span><span class="pill">⚔️ ${esc(c.attack_name||"Attack")} — ${c.attack_damage||0}</span><button class="red" onclick="deleteCard('${c.id}')">🗑️ Delete</button></div>`).join(""):"<div class='card'><h2>🃏 No cards yet!</h2></div>";
+ fillBattleCards();
+}
+async function addCard(){
+ const name=document.getElementById("cardName").value.trim(),hp=Number(document.getElementById("cardHp").value),attack_name=document.getElementById("attackName").value.trim(),attack_damage=Number(document.getElementById("attackDamage").value)||0,file=document.getElementById("cardImage").files[0];
+ if(!name||!hp)return alert("Enter a card name and HP.");
+ let image=null;if(file){if(file.size>2e6)return alert("Use an image under 2 MB.");image=await dataURL(file)}
+ const r=await sb.from("cards").insert({user_id:user.id,name,hp,attack_name,attack_damage,image});
+ if(r.error)return alert(r.error.message);
+ ["cardName","cardHp","attackName","attackDamage","cardImage"].forEach(id=>document.getElementById(id).value="");loadCards();
+}
+async function deleteCard(id){if(!confirm("Delete this card?"))return;const r=await sb.from("cards").delete().eq("id",id).eq("user_id",user.id);if(r.error)alert(r.error.message);else loadCards()}
+function dataURL(f){return new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(f)})}
+async function scanCard(){
+ const f=document.getElementById("cardImage").files[0];if(!f)return alert("Take or choose a card photo first.");
+ const m=document.getElementById("scanMsg");m.textContent="📷 Reading photo…";
+ if(!("TextDetector" in window)){m.textContent="Automatic text detection isn't available in this browser. You can enter the fields manually.";return}
+ try{const b=await createImageBitmap(f),d=await new TextDetector().detect(b),t=d.map(x=>x.rawValue||"").join("\n"),l=t.split(/\n+/).map(x=>x.trim()).filter(Boolean);if(l[0])document.getElementById("cardName").value=l[0];const h=t.match(/\b(?:HP\s*)?(\d{2,4})\b/i);if(h)document.getElementById("cardHp").value=h[1];if(l[1])document.getElementById("attackName").value=l[1].replace(/\d+/g,"").trim();const n=[...t.matchAll(/\b(\d{2,3})\b/g)];if(n.length)document.getElementById("attackDamage").value=n[n.length-1][1];m.textContent="✅ Done — check the fields before saving."}catch(e){m.textContent="Couldn't read the photo automatically. Enter the fields manually."}
+}
+
+async function loadFriends(){
+ const incoming=await sb.from("friend_requests").select("*").eq("to_user",user.id).eq("status","pending");
+ if(!incoming.data?.length)document.getElementById("requests").innerHTML="<p>No pending requests.</p>";else{
+  const ids=incoming.data.map(x=>x.from_user),p=await sb.from("profiles").select("id,username,friend_code").in("id",ids);
+  document.getElementById("requests").innerHTML=(p.data||[]).map(x=>{const q=incoming.data.find(r=>r.from_user===x.id);return `<div class="friend">👤 ${esc(x.username)} <span><button onclick="respond('${q.id}','accepted')">Accept</button><button class="red" onclick="respond('${q.id}','declined')">Decline</button></span></div>`}).join("");
+ }
+ const accepted=await sb.from("friend_requests").select("*").or(`from_user.eq.${user.id},to_user.eq.${user.id}`).eq("status","accepted");
+ const ids=(accepted.data||[]).map(x=>x.from_user===user.id?x.to_user:x.from_user);
+ if(!ids.length){friends=[];document.getElementById("friendsList").innerHTML="<p>No friends yet.</p>";fillOpponent();return}
+ const p=await sb.from("profiles").select("id,username,friend_code").in("id",ids);friends=p.data||[];
+ document.getElementById("friendsList").innerHTML=friends.map(x=>`<div class="friend">🤝 ${esc(x.username)} <span class="small">${esc(x.friend_code)}</span></div>`).join("");
+ fillOpponent();
+}
+function fillOpponent(){const s=document.getElementById("opponent");s.innerHTML=friends.length?friends.map(f=>`<option value="${f.id}">${esc(f.username)}</option>`).join(""):"<option>No friends yet</option>"}
+async function sendFriendRequest(){
+ const code=document.getElementById("friendCode").value.trim().toUpperCase().replace(/\s/g,"");if(!code)return;
+ if(code===profile.friend_code)return message("friendMsg","That's your own friend code!");
+ const t=await sb.from("profiles").select("id").eq("friend_code",code).single();if(t.error)return message("friendMsg","No account found with that code.");
+ const old=await sb.from("friend_requests").select("id,status").or(`and(from_user.eq.${user.id},to_user.eq.${t.data.id}),and(from_user.eq.${t.data.id},to_user.eq.${user.id})`);
+ if((old.data||[]).some(x=>x.status==="accepted"))return message("friendMsg","You're already friends.");
+ if((old.data||[]).some(x=>x.status==="pending"))return message("friendMsg","A request already exists.");
+ const r=await sb.from("friend_requests").insert({from_user:user.id,to_user:t.data.id,status:"pending"});message("friendMsg",r.error?r.error.message:"🎉 Friend request sent!",!r.error);loadFriends();
+}
+async function respond(id,status){const r=await sb.from("friend_requests").update({status}).eq("id",id).eq("to_user",user.id);if(r.error)alert(r.error.message);loadFriends()}
+
+function fillBattleCards(){const s=document.getElementById("battleCard");s.innerHTML=cards.length?cards.map(c=>`<option value="${c.id}">${esc(c.name)} — ${c.hp} HP</option>`).join(""):"<option>No cards yet</option>"}
+
+/* ================= LIVE BATTLE ================= */
+async function createBattle(){
+ const opponent_id=document.getElementById("opponent").value,cardId=document.getElementById("battleCard").value,card=cards.find(c=>c.id===cardId);
+ if(!opponent_id||!card)return message("battleMsg","Add a card and a friend first.");
+ const r=await sb.from("battles").insert({player1:user.id,player2:opponent_id,player1_card_id:card.id,status:"pending"}).select().single();
+ if(r.error)return message("battleMsg",r.error.message);
+ message("battleMsg","⚔️ Challenge sent! Waiting for your friend…",true);loadChallenges();
+}
+async function loadChallenges(){
+ const incoming=await sb.from("battles").select("*").eq("player2",user.id).eq("status","pending").order("created_at",{ascending:false});
+ const box=document.getElementById("challenges");
+ if(!incoming.data?.length){box.innerHTML="<p>No incoming challenges.</p>";return}
+ const ids=incoming.data.map(b=>b.player1),p=await sb.from("profiles").select("id,username").in("id",ids);
+ box.innerHTML=(incoming.data||[]).map(b=>{const person=(p.data||[]).find(x=>x.id===b.player1);return `<div class="friend">⚔️ ${esc(person?.username||"Friend")} challenged you! <button onclick="acceptBattle('${b.id}')">Accept</button><button class="red" onclick="declineBattle('${b.id}')">Decline</button></div>`}).join("");
+}
+async function acceptBattle(id){
+ const r=await sb.from("battles").update({status:"active",turn_user:user.id}).eq("id",id).eq("player2",user.id).eq("status","pending").select().single();
+ if(r.error)return alert(r.error.message);
+ await openBattle(r.data.id);loadChallenges();
+}
+async function declineBattle(id){await sb.from("battles").update({status:"declined"}).eq("id",id).eq("player2",user.id).eq("status","pending");loadChallenges()}
+async function openBattle(id){
+ const r=await sb.from("battles").select("*").eq("id",id).single();if(r.error)return;
+ currentBattle=r.data;renderBattle();
+ if(channel)await sb.removeChannel(channel);
+ channel=sb.channel("battle-"+id).on("postgres_changes",{event:"UPDATE",schema:"public",table:"battles",filter:"id=eq."+id},payload=>{currentBattle=payload.new;renderBattle()}).subscribe();
+}
+async function renderBattle(){
+ const b=currentBattle;if(!b)return;
+ let p1=await sb.from("profiles").select("username").eq("id",b.player1).single(),p2=await sb.from("profiles").select("username").eq("id",b.player2).single();
+ let c1=await sb.from("cards").select("*").eq("id",b.player1_card_id).single(),c2=b.player2_card_id?await sb.from("cards").select("*").eq("id",b.player2_card_id).single():null;
+ if(!c1.data)return;
+ if(!c2?.data){document.getElementById("battleArea").innerHTML=`<div class="card"><h2>⚔️ Battle waiting for ${esc(p2.data?.username||"your friend")}</h2><p>Your challenge is active.</p></div>`;return}
+ const hp1=Number(b.player1_hp??c1.data.hp),hp2=Number(b.player2_hp??c2.data.hp),turn=b.turn_user===user.id;
+ document.getElementById("battleArea").innerHTML=`<div class="card"><h2>⚔️ LIVE BATTLE</h2><div class="battleArena">
+ <div class="fighter"><h2>${esc(p1.data?.username||"Player 1")}</h2><img class="cardpic" src="${c1.data.image||""}"><h3>${esc(c1.data.name)}</h3><div class="hpbar"><div class="hpfill" style="width:${Math.max(0,hp1/c1.data.hp*100)}%"></div></div><p>❤️ ${hp1}/${c1.data.hp}</p></div>
+ <div class="fighter"><h2>${esc(p2.data?.username||"Player 2")}</h2><img class="cardpic" src="${c2.data.image||""}"><h3>${esc(c2.data.name)}</h3><div class="hpbar"><div class="hpfill" style="width:${Math.max(0,hp2/c2.data.hp*100)}%"></div></div><p>❤️ ${hp2}/${c2.data.hp}</p></div>
+ </div><p class="${turn?'success':''}">${b.status==="active"?(turn?"⚡ YOUR TURN":"⏳ Waiting for your friend…"):"🏁 Battle "+b.status}</p>${b.status==="active"&&turn?`<button onclick="makeMove()">⚡ Attack for ${user.id===b.player1?c1.data.attack_damage||10:c2.data.attack_damage||10}</button>`:""}</div>`;
+}
+async function makeMove(){
+ const b=currentBattle;if(!b||b.status!=="active"||b.turn_user!==user.id)return;
+ let c1=await sb.from("cards").select("*").eq("id",b.player1_card_id).single(),c2=await sb.from("cards").select("*").eq("id",b.player2_card_id).single();
+ if(c1.error||c2.error)return;
+ let hp1=Number(b.player1_hp??c1.data.hp),hp2=Number(b.player2_hp??c2.data.hp),damage=Number((user.id===b.player1?c1.data.attack_damage:c2.data.attack_damage)||10);
+ if(user.id===b.player1)hp2=Math.max(0,hp2-damage);else hp1=Math.max(0,hp1-damage);
+ let status=(hp1<=0||hp2<=0)?"finished":"active",winner=hp1<=0?b.player2:(hp2<=0?b.player1:null);
+ const update={player1_hp:hp1,player2_hp:hp2,status:status,turn_user:status==="active"?(user.id===b.player1?b.player2:b.player1):null,winner:winner};
+ const r=await sb.from("battles").update(update).eq("id",b.id).eq("turn_user",user.id).select().single();
+ if(r.error)return alert(r.error.message);
+ if(status==="finished"){await sb.from("profiles").update({wins:sb.raw?undefined:undefined}).eq("id","__never__");}
+ currentBattle=r.data;renderBattle();
+}
+async function boot(){
+ if(!READY)return;
+ const r=await sb.auth.getSession();if(r.data.session)await showApp(r.data.session.user);
+}
+async function showApp(u){user=u;document.getElementById("auth").style.display="none";document.getElementById("setup").style.display="none";document.getElementById("app").style.display="block";await loadProfile();await loadCards();await loadFriends();await loadChallenges();}
+sb.auth.onAuthStateChange((event,session)=>{if(session&&!user)setTimeout(()=>showApp(session.user),0)});
+boot();
+</script>
+</body>
+</html>
